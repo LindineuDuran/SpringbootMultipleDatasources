@@ -9,13 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.lduran.multdb.db1.modelentity.*;
+import com.lduran.multdb.listas.AvailableProcesses;
 import com.lduran.multdb.util.FileHandler;
+import com.lduran.multdb.util.ListHandler;
 
 @Component
 public class ExtractionCenter
 {
 	@Autowired
 	FileHandler fh;
+
+	@Autowired
+	ListHandler lst;
 
 	@Bean
 	public void start()
@@ -43,6 +49,18 @@ public class ExtractionCenter
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		// Processes Organization Information
+		List<String> grupo = AvailableProcesses.Organizacoes.getGrupo();
+		Organizacao org = (Organizacao) this.lst.processFileInfo(file, "Organizacao", grupo);
+
+		// Processes Product and Service information, generating a list
+		grupo = AvailableProcesses.ProdServ.getGrupo();
+		List<ProdServ> lstProdServ = (List<ProdServ>) this.lst.processFileInfo(file, "ProdServ", "", grupo);
+
+		// Processes Service Invoice information, generating a list
+		grupo = AvailableProcesses.NotaFiscalDeServico.getGrupo();
+		List<Comercial> lstMovimentacoesComerciais = (List<Comercial>) this.lst.processFileInfo(file, "Comercial", "NotaFiscalDeServico", grupo);
 
 		// End of metric
 		LocalDateTime dateTimeFim = LocalDateTime.now();
