@@ -10,7 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import com.lduran.multdb.db1.modelentity.*;
+import com.lduran.multdb.db2.modelentity.ComercialH2Agreg;
 import com.lduran.multdb.listas.AvailableProcesses;
+import com.lduran.multdb.modelservice.BuildService;
+import com.lduran.multdb.modelservice.ComercialH2Service;
 import com.lduran.multdb.util.FileHandler;
 import com.lduran.multdb.util.ListHandler;
 
@@ -22,6 +25,9 @@ public class ExtractionCenter
 
 	@Autowired
 	ListHandler lst;
+
+	@Autowired
+	BuildService bs;
 
 	@Bean
 	public void start()
@@ -61,6 +67,15 @@ public class ExtractionCenter
 		// Processes Service Invoice information, generating a list
 		grupo = AvailableProcesses.NotaFiscalDeServico.getGrupo();
 		List<Comercial> lstMovimentacoesComerciais = (List<Comercial>) this.lst.processFileInfo(file, "Comercial", "NotaFiscalDeServico", grupo);
+
+		// Process Business Transaction data and insert into Database H2
+		this.fh.readAndProcessStreamOriginal(inputFile);
+
+		// Returns Aggregation of Business Movement Data
+		List<ComercialH2Agreg> lstMovCom = ((ComercialH2Service) this.bs.getObjectService("ComercialH2")).listAgreg();
+
+		// Clears H2 Database after Aggregation Processing
+		((ComercialH2Service) this.bs.getObjectService("ComercialH2")).delete();
 
 		// End of metric
 		LocalDateTime dateTimeFim = LocalDateTime.now();

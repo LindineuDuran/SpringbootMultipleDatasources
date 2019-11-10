@@ -15,8 +15,8 @@ public class BuildService
 	@Autowired
 	private ComercialService comercialService;
 
-	// @Autowired
-	// private ComercialH2Service comercialH2Service;
+	@Autowired
+	private ComercialH2Service comercialH2Service;
 
 	public ObjectService getObjectService(String objectType)
 	{
@@ -28,8 +28,8 @@ public class BuildService
 			return (ObjectService) this.prodServService;
 		case "Comercial":
 			return (ObjectService) this.comercialService;
-		// case "ComercialH2":
-		// return (ObjectService) this.comercialH2Service;
+		case "ComercialH2":
+			return (ObjectService) this.comercialH2Service;
 		default:
 			return null;
 		}

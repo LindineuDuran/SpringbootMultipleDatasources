@@ -37,6 +37,6 @@ public class ComercialH2
 	private BigDecimal valorPIS = new BigDecimal(0);
 	private BigDecimal baseCOFINS = new BigDecimal(0);
 	private BigDecimal basePIS = new BigDecimal(0);
-	private Double aliquotaCOFINS = 0.0;
-	private Double aliquotaPIS = 0.0;
+	private BigDecimal aliquotaCOFINS = new BigDecimal(0);
+	private BigDecimal aliquotaPIS = new BigDecimal(0);
 }
