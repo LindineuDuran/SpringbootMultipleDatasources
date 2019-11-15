@@ -1,5 +1,6 @@
 package com.lduran.multdb.util;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -50,7 +51,7 @@ public class ListHandler
 	}
 
 	/**
-	 * Receive data and return object of type Organization
+	 * Receive data and return an object
 	 *
 	 * @param file
 	 * @return
@@ -71,8 +72,7 @@ public class ListHandler
 	}
 
 	/**
-	 * Recebe dados de Escrituração Fiscal Digital e retorna objeto do
-	 * tipo Organizacao
+	 * Receive data and return a List<Object>
 	 *
 	 * @param file
 	 * @return
@@ -90,5 +90,28 @@ public class ListHandler
 		}
 
 		return objectList;
+	}
+
+	/**
+	 * Formats List<String> from List<ObjectBI> provided
+	 *
+	 * @param lstObjetosBI
+	 * @param objectType
+	 * @return
+	 * @throws IOException
+	 */
+	public List<String> formataRelatorio(List<? extends ObjectBI> lstObjetosBI, String objectType) throws IOException
+	{
+		List<String> relatorio = new LinkedList<>();
+
+		String header = this.bs.getObjectService(objectType).getObjectHeader();
+		relatorio.add(header);
+
+		if (!lstObjetosBI.isEmpty())
+		{
+			relatorio.addAll(lstObjetosBI.stream().map(line -> this.bs.getObjectService(objectType).getObjectContent(line)).collect(Collectors.toList()));
+		}
+
+		return relatorio;
 	}
 }

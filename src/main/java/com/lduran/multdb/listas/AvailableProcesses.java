@@ -5,7 +5,10 @@ import java.util.stream.Stream;
 
 public enum AvailableProcesses
 {
-	Organizacoes("|0000|"), ProdServ("|0200|"), NotaFiscalDeServico("|A010|", "|A100|", "|A170|"), MovimentacoesComerciais("|C010|", "|C100|", "|C175|");
+	Organizacoes("|0000|"),
+	ProdServ("|0200|"),
+	NotaFiscalDeServico("|A010|", "|A100|", "|A170|"),
+	MovimentacoesComerciais("|C010|", "|C100|", "|C175|");
 
 	private String[] grupo;
 

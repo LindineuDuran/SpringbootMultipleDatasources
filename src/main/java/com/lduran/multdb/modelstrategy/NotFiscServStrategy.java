@@ -101,10 +101,6 @@ public class NotFiscServStrategy extends ComercialServiceImpl
 				{
 					dataMovimento = DateFactory.getInstance().dateModelConverter(item[11]);
 				}
-				if ((item.length > 12) && (item[12] != null) && (ToolsFactory.getInstance().isNumeric(item[12])))
-				{
-					valorTotalNFe = new BigDecimal(Double.parseDouble(item[12])).setScale(2, BigDecimal.ROUND_HALF_UP);
-				}
 				if ((item.length > 13) && (item[13] != null))
 				{
 					pagamento = ToolsFactory.getInstance().obtemIndicadorTipoPagamento(item[13]);
@@ -115,8 +111,6 @@ public class NotFiscServStrategy extends ComercialServiceImpl
 
 				// Forma Serviços de Transporte
 				itemNotFiscServ = this.constroiObjeto(organizacao, itemNF + 1, operacao, emissao, participante, modelo, situacao, dataEmissao, dataMovimento, valorTotalNFe, frete, seguro, outrasDespesas, pagamento, modFrete, comPK);
-
-				notasFiscaisServico.add(itemNotFiscServ);
 
 				break;
 

@@ -1,12 +1,15 @@
 package com.lduran.multdb.modelservice;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lduran.multdb.db1.modelentity.Comercial;
+import com.lduran.multdb.db1.modelentity.ObjectBI;
 import com.lduran.multdb.db2.modelentity.ComercialH2;
 import com.lduran.multdb.db2.modelentity.ComercialH2Agreg;
 import com.lduran.multdb.db2.modelrepository.ComRepoH2;
@@ -26,9 +29,49 @@ public class ComercialH2ServiceImpl extends ObjectAdapter implements ComercialH2
 	}
 
 	@Override
+	public void saveAll(List<Comercial> lstMovCom)
+	{
+		lstMovCom.forEach(com ->
+		{
+			ComercialH2 comTemp = this.convertComercialToComercialH2(com);
+			this.comRepoH2.save(comTemp);
+		});
+	}
+
+	@Override
 	public void delete()
 	{
 		this.comRepoH2.deleteAll();
+	}
+
+	public ComercialH2 convertComercialToComercialH2(Comercial com)
+	{
+		ComercialH2 comTemp = new ComercialH2();
+
+		comTemp.setOrganizacao(com.getOrganizacao());
+		comTemp.setOperacao(com.getOperacao());
+		comTemp.setEmissao(com.getEmissao());
+		comTemp.setParticipante(com.getParticipante());
+		comTemp.setSituacao(com.getSituacao());
+		comTemp.setProduto(com.getProduto());
+		comTemp.setDataEmissao(com.getDataEmissao());
+		comTemp.setDataMovimento(com.getDataMovimento());
+		comTemp.setPagamento(com.getPagamento());
+		comTemp.setCstCOFINS(com.getCstCOFINS());
+		comTemp.setCstPIS(com.getCstPIS());
+		comTemp.setAliquotaCOFINS(com.getAliquotaCOFINS());
+		comTemp.setAliquotaPIS(com.getAliquotaPIS());
+		comTemp.setBaseCredito(com.getBaseCredito());
+		comTemp.setOrigemCredito(com.getOrigemCredito());
+		comTemp.setValorTotalNFe(com.getValorTotalNFe());
+		comTemp.setValorTotal(com.getValorTotal());
+		comTemp.setDesconto(com.getDesconto());
+		comTemp.setValorCOFINS(com.getValorCOFINS());
+		comTemp.setValorPIS(com.getValorPIS());
+		comTemp.setBaseCOFINS(com.getBaseCOFINS());
+		comTemp.setBasePIS(com.getBasePIS());
+
+		return comTemp;
 	}
 
 	@Override
@@ -42,7 +85,8 @@ public class ComercialH2ServiceImpl extends ObjectAdapter implements ComercialH2
 		return all;
 	}
 
-	public static ComercialH2 getObject(String lineContent, ComercialH2 movCom)
+	@Override
+	public ComercialH2 getObject(String lineContent, ComercialH2 movCom)
 	{
 		ComercialH2 movComTemp = new ComercialH2();
 
@@ -157,5 +201,33 @@ public class ComercialH2ServiceImpl extends ObjectAdapter implements ComercialH2
 		}
 
 		return movComTemp;
+	}
+
+	@Override
+	public String getObjectHeader()
+	{
+		return "IdOrganizacao;Operacao;Emissao;IdParticipante;IdSituacao;IdProduto;DataDaEmissao;DataDoMovimento;" + "Pagamento;CstCOFINS;CstPIS;AliquotaCOFINS;AliquotaPIS;BaseCalculoDoCredito;OrigemDoCredito;TotalDoDocumentoFiscal;"
+				+ "TotalDoItem;ValorDesconto;ValorCOFINS;ValorPIS;BaseDeCalculoCOFINS;BaseDeCalculoPIS";
+	}
+
+	@Override
+	public String getObjectContent(ObjectBI obj)
+	{
+		NumberFormat formatadorNumerico = NumberFormat.getNumberInstance();
+
+		ComercialH2 com = (ComercialH2) obj;
+
+		try
+		{
+			return com.getOrganizacao() + ";" + com.getOperacao() + ";" + com.getEmissao() + ";" + com.getParticipante() + ";" + com.getSituacao() + ";" + com.getProduto() + ";" + com.getDataEmissao() + ";" + com.getDataMovimento() + ";"
+					+ com.getPagamento() + ";" + com.getCstCOFINS() + ";" + com.getCstPIS() + ";" + formatadorNumerico.format(com.getAliquotaCOFINS()) + ";" + formatadorNumerico.format(com.getAliquotaPIS()) + ";" + com.getBaseCredito()
+					+ ";" + com.getOrigemCredito() + ";" + formatadorNumerico.format(com.getValorTotalNFe()) + ";" + formatadorNumerico.format(com.getValorTotal()) + ";" + formatadorNumerico.format(com.getDesconto()) + ";"
+					+ formatadorNumerico.format(com.getValorCOFINS()) + ";" + formatadorNumerico.format(com.getValorPIS()) + ";" + formatadorNumerico.format(com.getBaseCOFINS()) + ";" + formatadorNumerico.format(com.getBasePIS());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return "";
+		}
 	}
 }

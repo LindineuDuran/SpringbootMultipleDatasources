@@ -15,36 +15,32 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.zaxxer.hikari.HikariDataSource;
-
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(entityManagerFactoryRef = "db2EntityManagerFactory", basePackages =
-{ "com.lduran.multdb.db2.modelrepository" })
+@EnableJpaRepositories(basePackages = "com.lduran.multdb.db2.modelrepository", entityManagerFactoryRef = "db2EntityManagerFactory", transactionManagerRef = "db2TransactionManager")
 public class DB2Config
 {
-	@Bean(name = "dataSourceProperties")
+	@Bean
 	@ConfigurationProperties("db2.datasource")
-	public DataSourceProperties dataSourceProperties()
+	public DataSourceProperties db2Properties()
 	{
 		return new DataSourceProperties();
 	}
 
-	@Bean(name = "dataSource")
-	@ConfigurationProperties("db2.datasource.configuration")
-	public DataSource dataSource(@Qualifier("dataSourceProperties") DataSourceProperties dataSourceProperties)
+	@Bean
+	public DataSource db2DataSource(@Qualifier("db2Properties") DataSourceProperties db2Properties)
 	{
-		return dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+		return db2Properties.initializeDataSourceBuilder().build();
 	}
 
-	@Bean(name = "db2EntityManagerFactory")
-	public LocalContainerEntityManagerFactoryBean db2EntityManagerFactory(EntityManagerFactoryBuilder builder, @Qualifier("dataSource") DataSource dataSource)
+	@Bean
+	public LocalContainerEntityManagerFactoryBean db2EntityManagerFactory(@Qualifier("db2DataSource") DataSource db2DataSource, EntityManagerFactoryBuilder builder)
 	{
-		return builder.dataSource(dataSource).packages("com.lduran.multdb.db2.modelentity").persistenceUnit("db2").build();
+		return builder.dataSource(db2DataSource).packages("com.lduran.multdb.db2.modelentity").build();
 	}
 
-	@Bean(name = "transactionManager")
-	public PlatformTransactionManager transactionManager(@Qualifier("db2EntityManagerFactory") EntityManagerFactory db2EntityManagerFactory)
+	@Bean
+	public PlatformTransactionManager db2TransactionManager(EntityManagerFactory db2EntityManagerFactory)
 	{
 		return new JpaTransactionManager(db2EntityManagerFactory);
 	}

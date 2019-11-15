@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.*;
 
+import com.lduran.multdb.db1.modelentity.ObjectBI;
+
 import lombok.*;
 
 @Entity
@@ -11,7 +13,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class ComercialH2
+public class ComercialH2 extends ObjectBI
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

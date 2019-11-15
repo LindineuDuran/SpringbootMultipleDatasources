@@ -87,10 +87,6 @@ public class MovComStrategy extends ComercialServiceImpl
 			{
 				movComTemp.setDataMovimento(DateFactory.getInstance().dateModelConverter(item[11]));
 			}
-			if ((item.length > 12) && (item[12] != null) && (ToolsFactory.getInstance().isNumeric(item[12])))
-			{
-				movComTemp.setValorTotalNFe(new BigDecimal(Double.parseDouble(item[12])).setScale(2, BigDecimal.ROUND_HALF_UP));
-			}
 			if ((item.length > 13) && (item[13] != null))
 			{
 				movComTemp.setPagamento(ToolsFactory.getInstance().obtemIndicadorTipoPagamento(item[13]));
@@ -193,7 +189,7 @@ public class MovComStrategy extends ComercialServiceImpl
 		{
 			movCom = (Comercial) this.getObject(fileContent.get(line), movCom);
 
-			if (movCom.getComercialPK() != null)
+			if (movCom.getValorTotal().doubleValue() != 0)
 			{
 				lstMovimentacoesComerciais.add(movCom);
 			}
